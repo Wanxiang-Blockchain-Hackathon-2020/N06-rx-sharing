@@ -159,12 +159,12 @@ func genRxId(address sdk.AccAddress) string {
 }
 
 // NewRx returns a new Rx
-func NewRx(address sdk.AccAddress, status int64, time time.Time, encrypted string, memo string) Rx {
+func NewRx(address sdk.AccAddress, encrypted string, memo string) Rx {
 	return Rx{
 		ID:        genRxId(address),
 		Patient:   address,
-		Status:    sdk.NewInt(status),
-		Time:      time,
+		Status:    sdk.NewInt(Rx_ACTIVE),
+		Time:      time.Now(),
 		Encrypted: encrypted,
 		tokens:    make(map[string]string),
 		Memo:      memo,
