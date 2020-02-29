@@ -26,7 +26,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case types.MsgAuthorizeRx:
 			return handleMsgAuthorizeRx(ctx, keeper, msg)
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Unrecognized faucet Msg type: %v", msg.Type()))
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Unrecognized rx-sharing Msg type: %v", msg.Type()))
 		}
 	}
 }
@@ -34,7 +34,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 // Handle a message to Prescribe
 func handleMsgPrescribe(ctx sdk.Context, keeper Keeper, msg types.MsgPrescribe) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.Prescribe(ctx, msg.Doctor, msg.Patient, msg.Encrypted, msg.Memo, msg.Envelope)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func handleMsgPrescribe(ctx sdk.Context, keeper Keeper, msg types.MsgPrescribe) 
 // Handle a message to Sale Drugs
 func handleMsgSaleDrugs(ctx sdk.Context, keeper Keeper, msg types.MsgSaleDrugs) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.SaleDrugs(ctx, msg.Patient, msg.ID, msg.DrugStore)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func handleMsgSaleDrugs(ctx sdk.Context, keeper Keeper, msg types.MsgSaleDrugs) 
 // Handle a message to Register Docter
 func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDocter) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.RegisterDoctor(ctx, msg.Address, msg.Name, msg.Gender, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegist
 // Handle a message to Register DrugStore
 func handleMsgRegisterDrugStore(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDrugStore) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.RegisterDrugstore(ctx, msg.Address, msg.Name, msg.Phone, msg.Group, msg.BizTime, msg.Location)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func handleMsgRegisterDrugStore(ctx sdk.Context, keeper Keeper, msg types.MsgReg
 // Handle a message to Register Patient
 func handleMsgRegisterPatient(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterPatient) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.RegisterPatient(ctx, msg.Address, msg.Name, msg.Gender, msg.Birthday, msg.Encrypted, msg.Envelope)
 	if err != nil {
 		return nil, err
@@ -94,7 +94,7 @@ func handleMsgRegisterPatient(ctx sdk.Context, keeper Keeper, msg types.MsgRegis
 // Handle a message to Authorize Rx
 func handleMsgAuthorizeRx(ctx sdk.Context, keeper Keeper, msg types.MsgAuthorizeRx) (*sdk.Result, error) {
 
-	keeper.Logger(ctx).Info("received mint message: %s", msg)
+	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.Authorize(ctx, msg.Patient, msg.ID, msg.DrugStore, msg.Envelope)
 	if err != nil {
 		return nil, err
