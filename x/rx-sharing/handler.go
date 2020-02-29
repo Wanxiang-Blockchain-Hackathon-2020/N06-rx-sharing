@@ -59,7 +59,7 @@ func handleMsgSaleDrugs(ctx sdk.Context, keeper Keeper, msg types.MsgSaleDrugs) 
 func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDocter) (*sdk.Result, error) {
 
 	keeper.Logger(ctx).Info("received mint message: %s", msg)
-	err := keeper.RegisterDoctor(ctx, msg.Address, msg.Name, msg.Sex, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
+	err := keeper.RegisterDoctor(ctx, msg.Address, msg.Name, msg.Gender, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func handleMsgRegisterDrugStore(ctx sdk.Context, keeper Keeper, msg types.MsgReg
 func handleMsgRegisterPatient(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterPatient) (*sdk.Result, error) {
 
 	keeper.Logger(ctx).Info("received mint message: %s", msg)
-	err := keeper.RegisterPatient(ctx, msg.Address, msg.Name, msg.Sex, msg.Birthday, msg.Encrypted, msg.Envelope)
+	err := keeper.RegisterPatient(ctx, msg.Address, msg.Name, msg.Gender, msg.Birthday, msg.Encrypted, msg.Envelope)
 	if err != nil {
 		return nil, err
 	}

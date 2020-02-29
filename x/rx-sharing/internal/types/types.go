@@ -12,18 +12,18 @@ import (
 type Patient struct {
 	Address   sdk.AccAddress `json:"address"`
 	Name      string         `json:"name"`
-	Sex       string         `json:"sex"`
+	Gender    string         `json:"gender"`
 	Birthday  time.Time      `json:"birthday"`
 	Encrypted string         `json:"encrypted"` //加密信息，如，疾病史，家族史，过敏药物等等
 	Envelope  string         `json:"envelope"`  //密码信封
 }
 
 // NewPatient returns a new Patient
-func NewPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string, envelope string) Patient {
+func NewPatient(address sdk.AccAddress, name string, gender string, birthday time.Time, encrypted string, envelope string) Patient {
 	return Patient{
 		Address:   address,
 		Name:      name,
-		Sex:       sex,
+		Gender:    gender,
 		Birthday:  birthday,
 		Encrypted: encrypted,
 		Envelope:  envelope,
@@ -33,7 +33,7 @@ func NewPatient(address sdk.AccAddress, name string, sex string, birthday time.T
 // implement fmt.Stringer
 func (p Patient) String() string {
 	return strings.TrimSpace(fmt.Sprintf(`Address: %s, Name: %s, Sex: %s, Birthday: %s, Encrypted: %s`,
-		p.Address, p.Name, p.Sex, p.Birthday, p.Encrypted))
+		p.Address, p.Name, p.Gender, p.Birthday, p.Encrypted))
 }
 
 /// Doctor
@@ -42,7 +42,7 @@ func (p Patient) String() string {
 type Doctor struct {
 	Address      sdk.AccAddress `json:"address"`
 	Name         string         `json:"name"`
-	Sex          string         `json:"sex"`
+	Gender       string         `json:"gender"`
 	Hospital     string         `json:"hospital"`     //就职医院
 	Department   string         `json:"department"`   //所在科室
 	Title        string         `json:"title"`        //职称
@@ -50,11 +50,11 @@ type Doctor struct {
 }
 
 // NewDoctor returns a new Doctor
-func NewDoctor(address sdk.AccAddress, name string, sex string, hospital string, department string, title string, introduction string) Doctor {
+func NewDoctor(address sdk.AccAddress, name string, gender string, hospital string, department string, title string, introduction string) Doctor {
 	return Doctor{
 		Address:      address,
 		Name:         name,
-		Sex:          sex,
+		Gender:       gender,
 		Hospital:     hospital,
 		Department:   hospital,
 		Title:        title,
@@ -65,7 +65,7 @@ func NewDoctor(address sdk.AccAddress, name string, sex string, hospital string,
 // implement fmt.Stringer
 func (d Doctor) String() string {
 	return strings.TrimSpace(fmt.Sprintf(`Address: %s, Name: %s, Sex: %s, Hospital: %s, Department: %s, Title: %s, Introduction: %s`,
-		d.Address, d.Name, d.Sex, d.Hospital, d.Department, d.Title, d.Introduction))
+		d.Address, d.Name, d.Gender, d.Hospital, d.Department, d.Title, d.Introduction))
 }
 
 /// DrugStore

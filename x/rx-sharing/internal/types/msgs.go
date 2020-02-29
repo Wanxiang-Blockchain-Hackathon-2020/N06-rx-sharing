@@ -13,18 +13,18 @@ const RouterKey = ModuleName // this was defined in your key.go file
 type MsgRegisterPatient struct {
 	Address   sdk.AccAddress `json:"address"`
 	Name      string         `json:"name"`
-	Sex       string         `json:"sex"`
+	Gender    string         `json:"gender"`
 	Birthday  time.Time      `json:"birthday"`
 	Encrypted string         `json:"encrypted"` //加密信息，如，疾病史，家族史，过敏药物等等
 	Envelope  string         `json:"envelope"`  //密码信封
 }
 
 // NewMsgRegisterPatient is a constructor function for MsgRegisterPatient
-func NewMsgRegisterPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string, envelope string) MsgRegisterPatient {
+func NewMsgRegisterPatient(address sdk.AccAddress, name string, gender string, birthday time.Time, encrypted string, envelope string) MsgRegisterPatient {
 	return MsgRegisterPatient{
 		Address:   address,
 		Name:      name,
-		Sex:       sex,
+		Gender:    gender,
 		Birthday:  birthday,
 		Encrypted: encrypted,
 		Envelope:  envelope,
@@ -64,7 +64,7 @@ func (msg MsgRegisterPatient) GetSigners() []sdk.AccAddress {
 type MsgRegisterDocter struct {
 	Address      sdk.AccAddress `json:"address"`
 	Name         string         `json:"name"`
-	Sex          string         `json:"sex"`
+	Gender       string         `json:"gender"`
 	Hospital     string         `json:"hospital"`     //就职医院
 	Department   string         `json:"department"`   //所在科室
 	Title        string         `json:"title"`        //职称
@@ -72,11 +72,11 @@ type MsgRegisterDocter struct {
 }
 
 // NewMsgRegisterDocter is a constructor function for MsgRegisterDocter
-func NewMsgRegisterDocter(address sdk.AccAddress, name string, sex string, hospital string, department string, title string, introduction string) MsgRegisterDocter {
+func NewMsgRegisterDocter(address sdk.AccAddress, name string, gender string, hospital string, department string, title string, introduction string) MsgRegisterDocter {
 	return MsgRegisterDocter{
 		Address:      address,
 		Name:         name,
-		Sex:          sex,
+		Gender:       gender,
 		Hospital:     hospital,
 		Department:   hospital,
 		Title:        title,
@@ -184,15 +184,17 @@ type MsgPrescribe struct {
 	Doctor    sdk.AccAddress `json:"doctor"`
 	Patient   sdk.AccAddress `json:"patient"`
 	Encrypted string         `json:"encrypted"` // 处方上链前需加密
+	Envelope  string         `json:"envelope"`
 	Memo      string         `json:"memo"`
 }
 
 // NewMsgRegisterDrugStore is a constructor function for MsgRegisterDrugStore
-func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, memo string) MsgPrescribe {
+func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, envelope string, memo string) MsgPrescribe {
 	return MsgPrescribe{
 		Doctor:    doctor,
 		Patient:   patient,
 		Encrypted: encrypted,
+		Envelope:  envelope,
 		Memo:      memo,
 	}
 }
@@ -235,6 +237,7 @@ type MsgAuthorizeRx struct {
 	Patient   sdk.AccAddress `json:"patient"`
 	DrugStore sdk.AccAddress `json:"drugstore"`
 	ID        string         `json:"id"` // 处方ID
+	Envelope  string         `json:"envelope"`
 }
 
 // NewMsgAuthorizeRx is a constructor function for MsgAuthorizeRx
