@@ -1,6 +1,7 @@
 # N06-ping.pub
 <div align="center">
-# 方块链 - 处方流转区块链
+
+<h1>方块链 - 处方流转区块链</h2>
 
 [![version](https://img.shields.io/github/tag/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing.svg)](https://github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/releases/latest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing)](https://goreportcard.com/report/github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing)
