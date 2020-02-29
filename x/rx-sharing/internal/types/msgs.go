@@ -20,13 +20,14 @@ type MsgRegisterPatient struct {
 }
 
 // NewMsgRegisterPatient is a constructor function for MsgRegisterPatient
-func NewMsgRegisterPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string) MsgRegisterPatient {
+func NewMsgRegisterPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string, envelope string) MsgRegisterPatient {
 	return MsgRegisterPatient{
 		Address:   address,
 		Name:      name,
 		Sex:       sex,
 		Birthday:  birthday,
 		Encrypted: encrypted,
+		Envelope:  envelope,
 	}
 }
 
@@ -179,7 +180,7 @@ func (msg MsgRegisterDrugStore) GetSigners() []sdk.AccAddress {
 /// Rx
 
 // MsgCreateRx defines a create rx message
-type MsgCreateRx struct {
+type MsgPrescribe struct {
 	Doctor    sdk.AccAddress `json:"doctor"`
 	Patient   sdk.AccAddress `json:"patient"`
 	Encrypted string         `json:"encrypted"` // 处方上链前需加密
@@ -187,8 +188,8 @@ type MsgCreateRx struct {
 }
 
 // NewMsgRegisterDrugStore is a constructor function for MsgRegisterDrugStore
-func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, memo string) MsgCreateRx {
-	return MsgCreateRx{
+func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, memo string) MsgPrescribe {
+	return MsgPrescribe{
 		Doctor:    doctor,
 		Patient:   patient,
 		Encrypted: encrypted,
@@ -197,18 +198,18 @@ func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted str
 }
 
 // Route should return the name of the module
-func (msg MsgCreateRx) Route() string { return RouterKey }
+func (msg MsgPrescribe) Route() string { return RouterKey }
 
 // Type should return the action
-func (msg MsgCreateRx) Type() string { return "create_rx" }
+func (msg MsgPrescribe) Type() string { return "prescribe" }
 
 // ValidateBasic runs stateless checks on the message
-func (msg MsgCreateRx) ValidateBasic() error {
+func (msg MsgPrescribe) ValidateBasic() error {
 	if msg.Doctor.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Doctor.String())
 	}
 	if msg.Patient.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Doctor.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Patient.String())
 	}
 	if len(msg.Encrypted) < 1 {
 		return sdkerrors.Wrap(ErrInputInvalid, msg.Encrypted)
@@ -220,12 +221,12 @@ func (msg MsgCreateRx) ValidateBasic() error {
 }
 
 // GetSignBytes encodes the message for signing
-func (msg MsgCreateRx) GetSignBytes() []byte {
+func (msg MsgPrescribe) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
 // GetSigners defines whose signature is required
-func (msg MsgCreateRx) GetSigners() []sdk.AccAddress {
+func (msg MsgPrescribe) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Doctor}
 }
 

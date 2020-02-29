@@ -19,13 +19,14 @@ type Patient struct {
 }
 
 // NewPatient returns a new Patient
-func NewPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string) Patient {
+func NewPatient(address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string, envelope string) Patient {
 	return Patient{
 		Address:   address,
 		Name:      name,
 		Sex:       sex,
 		Birthday:  birthday,
 		Encrypted: encrypted,
+		Envelope:  envelope,
 	}
 }
 
@@ -126,8 +127,9 @@ func (ch CaseHistory) SetRx(id string, rx Rx) {
 	ch.Rxs[id] = rx
 }
 
-func (ch CaseHistory) GetRx(id string) Rx {
-	return ch.Rxs[id]
+func (ch CaseHistory) GetRx(id string) (Rx, bool) {
+	rx, ok := ch.Rxs[id]
+	return rx, ok
 }
 
 func (ch CaseHistory) UpdateStatus(id string, status sdk.Int) {
@@ -147,6 +149,8 @@ type Rx struct {
 	Encrypted string            `json:"encrypted"` //加密处方数据
 	tokens    map[string]string `json:"tokens"`    //秘钥信封
 	Memo      string            `json:"memo"`
+	SaleStore string            `json:"sale_store"` //在哪个门店使用的
+	SaleTime  time.Time         `json:"sale_time"`  //销售时间
 }
 
 func genRxId(address sdk.AccAddress) string {
@@ -181,6 +185,7 @@ func (r Rx) AddAccessToken(recipient sdk.AccAddress, token string) {
 	r.tokens[recipient.String()] = token
 }
 
-func (r Rx) GetAccessToken(recipient sdk.AccAddress) string {
-	return r.tokens[recipient.String()]
+func (r Rx) GetAccessToken(recipient sdk.AccAddress) (string, bool) {
+	v, ok := r.tokens[recipient.String()]
+	return v, ok
 }
