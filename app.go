@@ -26,7 +26,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	rx_sharing "github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/doctor"
+	store "github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/drugstore"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/patient"
 )
 
 const appName = "rx-sharing"
@@ -49,7 +52,10 @@ var (
 		slashing.AppModuleBasic{},
 		supply.AppModuleBasic{},
 
-		rx_sharing.AppModule{},
+		admin.AppModule{},
+		patient.AppModule{},
+		doctor.AppModule{},
+		store.AppModule{},
 	)
 	// account permissions
 	maccPerms = map[string][]string{
@@ -91,7 +97,11 @@ type rxSharingApp struct {
 	distrKeeper    distr.Keeper
 	supplyKeeper   supply.Keeper
 	paramsKeeper   params.Keeper
-	nsKeeper       rx_sharing.Keeper
+
+	adminKeeper   admin.Keeper
+	doctorKeeper  doctor.Keeper
+	patientKeeper patient.Keeper
+	storeKeeper   store.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -117,7 +127,7 @@ func NewRxSharingApp(
 	bApp.SetAppVersion(version.Version)
 
 	keys := sdk.NewKVStoreKeys(bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
-		supply.StoreKey, distr.StoreKey, slashing.StoreKey, params.StoreKey, rx_sharing.StoreKey)
+		supply.StoreKey, distr.StoreKey, slashing.StoreKey, params.StoreKey, admin.StoreKey)
 
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
@@ -198,16 +208,25 @@ func NewRxSharingApp(
 
 	// The NameserviceKeeper is the Keeper from the module for this tutorial
 	// It handles interactions with the namestore
-	app.nsKeeper = rx_sharing.NewKeeper(
-		keys[rx_sharing.StoreKey],
+	app.adminKeeper = admin.NewKeeper(
+		keys[admin.StoreKey],
 		app.cdc,
 	)
+
+	app.doctorKeeper = doctor.NewKeeper(app.adminKeeper, keys[admin.StoreKey], app.cdc)
+	app.patientKeeper = patient.NewKeeper(app.adminKeeper, keys[admin.StoreKey], app.cdc)
+	app.storeKeeper = store.NewKeeper(app.adminKeeper, keys[admin.StoreKey], app.cdc)
 
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
 		auth.NewAppModule(app.accountKeeper),
 		bank.NewAppModule(app.bankKeeper, app.accountKeeper),
-		rx_sharing.NewAppModule(app.nsKeeper),
+
+		admin.NewAppModule(app.adminKeeper),
+		doctor.NewAppModule(app.doctorKeeper),
+		patient.NewAppModule(app.patientKeeper),
+		store.NewAppModule(app.storeKeeper),
+
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		distr.NewAppModule(app.distrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
@@ -226,7 +245,12 @@ func NewRxSharingApp(
 		auth.ModuleName,
 		bank.ModuleName,
 		slashing.ModuleName,
-		rx_sharing.ModuleName,
+
+		admin.ModuleName,
+		doctor.ModuleName,
+		patient.ModuleName,
+		store.ModuleName,
+
 		supply.ModuleName,
 		genutil.ModuleName,
 	)
