@@ -189,7 +189,7 @@ type MsgPrescribe struct {
 }
 
 // NewMsgRegisterDrugStore is a constructor function for MsgRegisterDrugStore
-func NewMsgCreateRx(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, envelope string, memo string) MsgPrescribe {
+func NewMsgPrescribe(doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, envelope string, memo string) MsgPrescribe {
 	return MsgPrescribe{
 		Doctor:    doctor,
 		Patient:   patient,

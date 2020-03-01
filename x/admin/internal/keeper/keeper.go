@@ -3,7 +3,7 @@ package keeper
 import (
 	"bytes"
 	"fmt"
-	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/rx-sharing/internal/types"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/internal/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/libs/log"

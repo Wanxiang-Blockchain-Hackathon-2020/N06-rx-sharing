@@ -1,9 +1,9 @@
-package rx_sharing
+package admin
 
 import (
 	"fmt"
 
-	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/rx-sharing/internal/types"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -26,7 +26,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case types.MsgAuthorizeRx:
 			return handleMsgAuthorizeRx(ctx, keeper, msg)
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Unrecognized rx-sharing Msg type: %v", msg.Type()))
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, fmt.Sprintf("Unrecognized admin Msg type: %v", msg.Type()))
 		}
 	}
 }
@@ -57,7 +57,6 @@ func handleMsgSaleDrugs(ctx sdk.Context, keeper Keeper, msg types.MsgSaleDrugs) 
 
 // Handle a message to Register Docter
 func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDocter) (*sdk.Result, error) {
-
 	keeper.Logger(ctx).Info("received message: %s", msg)
 	err := keeper.RegisterDoctor(ctx, msg.Address, msg.Name, msg.Gender, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
 	if err != nil {

@@ -26,7 +26,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	rx_sharing "github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/rx-sharing"
+	rx_sharing "github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin"
 )
 
 const appName = "rx-sharing"
