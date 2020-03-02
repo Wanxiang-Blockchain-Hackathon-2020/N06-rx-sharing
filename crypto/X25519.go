@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	ed25519 "github.com/miguelsandro/curve25519-go/axlsign"
 	"io"
@@ -13,7 +14,7 @@ import (
 
 func generateKeyED25519(seed []byte) (string, error) {
 	keypare := ed25519.GenerateKeyPair(seed)
-	return base64.StdEncoding.EncodeToString(keypare.PublicKey), nil
+	return hex.EncodeToString(keypare.PublicKey), nil
 }
 
 func aesEncrypt(key []byte, raw []byte) (string, error) {
@@ -81,7 +82,7 @@ func encryptX25519(seed []byte, pubkey string, content string) (string, string, 
 	}
 
 	keypair := ed25519.GenerateKeyPair(seed)
-	b64pk, _ := base64.StdEncoding.DecodeString(pubkey)
+	b64pk, _ := hex.DecodeString(pubkey)
 	sk := ed25519.SharedKey(keypair.PrivateKey, []uint8(b64pk))
 
 	envelope, err2 := aesEncrypt([]byte(sk), datakey) //生成密码信封
@@ -95,7 +96,7 @@ func encryptX25519(seed []byte, pubkey string, content string) (string, string, 
 func decryptX25519(pubkey string, seed []byte, envelope string, cryptText string) (string, error) {
 
 	keypair := ed25519.GenerateKeyPair(seed)
-	b64pk, _ := base64.StdEncoding.DecodeString(pubkey)
+	b64pk, _ := hex.DecodeString(pubkey)
 	sk := ed25519.SharedKey(keypair.PrivateKey, []uint8(b64pk))
 
 	datakey, err := aesDecrypt(sk, envelope)
