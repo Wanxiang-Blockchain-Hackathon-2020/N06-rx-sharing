@@ -6,5 +6,5 @@ import (
 
 // StakingKeeper is required for getting Denom
 type AdminKeeper interface {
-	Authorize(ctx sdk.Context, patient sdk.AccAddress, id string, recipient sdk.AccAddress, token string) error
+	Authorize(ctx sdk.Context, patient string, id string, recipient string, token string) error
 }

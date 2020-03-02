@@ -5,13 +5,9 @@ import (
 	"fmt"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/drugstore/internal/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/input"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/tendermint/libs/cli"
@@ -65,34 +61,4 @@ func GetTestCommand(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().String("test", "", "test")
 
 	return cmd
-}
-
-//GetCmdWithdraw is the CLI command for mining coin
-func GetCmdMint(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
-		Use:   "prescribe",
-		Short: "mint coin to sender address",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-
-			inBuf := bufio.NewReader(cmd.InOrStdin())
-			cliCtx := context.NewCLIContext().WithCodec(cdc)
-
-			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-
-			input.GetPassword("input password", inBuf)
-
-			encrypted := ""
-			envelope := ""
-			memo := ""
-
-			msg := types.NewMsgPrescribe(cliCtx.GetFromAddress(), cliCtx.GetFromAddress(), encrypted, envelope, memo)
-			err := msg.ValidateBasic()
-			if err != nil {
-				return err
-			}
-
-			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
-		},
-	}
 }

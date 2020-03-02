@@ -10,18 +10,18 @@ import (
 
 // Patient is a struct that contains all the metadata of a patient
 type Patient struct {
-	Address   sdk.AccAddress `json:"address"`
-	Name      string         `json:"name"`
-	Gender    string         `json:"gender"`
-	Birthday  time.Time      `json:"birthday"`
-	Encrypted string         `json:"encrypted"` //加密信息，如，疾病史，家族史，过敏药物等等
-	Envelope  string         `json:"envelope"`  //密码信封
+	Pubkey    string    `json:"pubkey"`
+	Name      string    `json:"name"`
+	Gender    string    `json:"gender"`
+	Birthday  time.Time `json:"birthday"`
+	Encrypted string    `json:"encrypted"` //加密信息，如，疾病史，家族史，过敏药物等等
+	Envelope  string    `json:"envelope"`  //密码信封
 }
 
 // NewPatient returns a new Patient
-func NewPatient(address sdk.AccAddress, name string, gender string, birthday time.Time, encrypted string, envelope string) Patient {
+func NewPatient(pubkey string, name string, gender string, birthday time.Time, encrypted string, envelope string) Patient {
 	return Patient{
-		Address:   address,
+		Pubkey:    pubkey,
 		Name:      name,
 		Gender:    gender,
 		Birthday:  birthday,
@@ -32,27 +32,27 @@ func NewPatient(address sdk.AccAddress, name string, gender string, birthday tim
 
 // implement fmt.Stringer
 func (p Patient) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`Address: %s, Name: %s, Sex: %s, Birthday: %s, Encrypted: %s`,
-		p.Address, p.Name, p.Gender, p.Birthday, p.Encrypted))
+	return strings.TrimSpace(fmt.Sprintf(`pubkey: %s, Name: %s, Sex: %s, Birthday: %s, Encrypted: %s`,
+		p.Pubkey, p.Name, p.Gender, p.Birthday, p.Encrypted))
 }
 
 /// Doctor
 
 // Doctor is a struct that contains all the metadata of a doctor
 type Doctor struct {
-	Address      sdk.AccAddress `json:"address"`
-	Name         string         `json:"name"`
-	Gender       string         `json:"gender"`
-	Hospital     string         `json:"hospital"`     //就职医院
-	Department   string         `json:"department"`   //所在科室
-	Title        string         `json:"title"`        //职称
-	Introduction string         `json:"introduction"` //介绍
+	Pubkey       string `json:"pubkey"`
+	Name         string `json:"name"`
+	Gender       string `json:"gender"`
+	Hospital     string `json:"hospital"`     //就职医院
+	Department   string `json:"department"`   //所在科室
+	Title        string `json:"title"`        //职称
+	Introduction string `json:"introduction"` //介绍
 }
 
 // NewDoctor returns a new Doctor
-func NewDoctor(address sdk.AccAddress, name string, gender string, hospital string, department string, title string, introduction string) Doctor {
+func NewDoctor(pubkey string, name string, gender string, hospital string, department string, title string, introduction string) Doctor {
 	return Doctor{
-		Address:      address,
+		Pubkey:       pubkey,
 		Name:         name,
 		Gender:       gender,
 		Hospital:     hospital,
@@ -64,26 +64,26 @@ func NewDoctor(address sdk.AccAddress, name string, gender string, hospital stri
 
 // implement fmt.Stringer
 func (d Doctor) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`Address: %s, Name: %s, Sex: %s, Hospital: %s, Department: %s, Title: %s, Introduction: %s`,
-		d.Address, d.Name, d.Gender, d.Hospital, d.Department, d.Title, d.Introduction))
+	return strings.TrimSpace(fmt.Sprintf(`Pubkey: %s, Name: %s, Sex: %s, Hospital: %s, Department: %s, Title: %s, Introduction: %s`,
+		d.Pubkey, d.Name, d.Gender, d.Hospital, d.Department, d.Title, d.Introduction))
 }
 
 /// DrugStore
 
 // DrugStore is a struct that contains all the metadata of a DrugStore
 type DrugStore struct {
-	Address  sdk.AccAddress `json:"address"`
-	Name     string         `json:"name"`
-	Phone    string         `json:"phone"`
-	Group    string         `json:"group"`    //所属连锁集团
-	BizTime  string         `json:"biz_time"` //营业时间
-	Location string         `json:"location"` //门店地址
+	Pubkey   string `json:"pubkey"`
+	Name     string `json:"name"`
+	Phone    string `json:"phone"`
+	Group    string `json:"group"`    //所属连锁集团
+	BizTime  string `json:"biz_time"` //营业时间
+	Location string `json:"location"` //门店地址
 }
 
 // NewDrugStore returns a new DrugStore
-func NewDrugStore(address sdk.AccAddress, name string, phone string, group string, biztime string, location string) DrugStore {
+func NewDrugStore(pubkey string, name string, phone string, group string, biztime string, location string) DrugStore {
 	return DrugStore{
-		Address:  address,
+		Pubkey:   pubkey,
 		Name:     name,
 		Phone:    phone,
 		Group:    group,
@@ -95,7 +95,7 @@ func NewDrugStore(address sdk.AccAddress, name string, phone string, group strin
 // implement fmt.Stringer
 func (d DrugStore) String() string {
 	return strings.TrimSpace(fmt.Sprintf(`Address: %s, Name: %s, Phone: %s, Group: %s, BizTime: %s, Location: %s`,
-		d.Address, d.Name, d.Phone, d.Group, d.BizTime, d.Location))
+		d.Pubkey, d.Name, d.Phone, d.Group, d.BizTime, d.Location))
 }
 
 const (
@@ -108,11 +108,11 @@ const (
 
 // Rx is a struct that contains all the metadata of a Rx
 type CaseHistory struct {
-	Patient sdk.AccAddress `json:"patient"`
-	Rxs     map[string]Rx  `json:"rxs"`
+	Patient string        `json:"patient"`
+	Rxs     map[string]Rx `json:"rxs"`
 }
 
-func NewCaseHistory(patient sdk.AccAddress) CaseHistory {
+func NewCaseHistory(patient string) CaseHistory {
 	return CaseHistory{
 		Patient: patient,
 		Rxs:     make(map[string]Rx),
@@ -143,7 +143,7 @@ func (ch CaseHistory) UpdateStatus(id string, status sdk.Int) {
 // Rx is a struct that contains all the metadata of a Rx
 type Rx struct {
 	ID        string            `json:"patient"`
-	Patient   sdk.AccAddress    `json:"patient"`
+	Patient   string            `json:"patient"`
 	Status    sdk.Int           `json:"status"`
 	Time      time.Time         `json:"time"`
 	Encrypted string            `json:"encrypted"` //加密处方数据
@@ -153,20 +153,20 @@ type Rx struct {
 	SaleTime  time.Time         `json:"sale_time"`  //销售时间
 }
 
-func genRxId(address sdk.AccAddress) string {
+func genRxId(pubkey string) string {
 	time.Now().Unix()
 	id := []string{}
-	id = append(id, address.String()[:2])
+	id = append(id, pubkey[:2])
 	id = append(id, "-")
 	id = append(id, string(time.Now().Unix()))
 	return strings.Join(id, "")
 }
 
 // NewRx returns a new Rx
-func NewRx(address sdk.AccAddress, encrypted string, memo string) Rx {
+func NewRx(pubkey string, encrypted string, memo string) Rx {
 	return Rx{
-		ID:        genRxId(address),
-		Patient:   address,
+		ID:        genRxId(pubkey),
+		Patient:   pubkey,
 		Status:    sdk.NewInt(Rx_ACTIVE),
 		Time:      time.Now(),
 		Encrypted: encrypted,
@@ -181,11 +181,11 @@ func (r Rx) String() string {
 		r.Patient, r.Status, r.Time, r.Encrypted, r.tokens, r.Memo))
 }
 
-func (r Rx) AddAccessToken(recipient sdk.AccAddress, token string) {
-	r.tokens[recipient.String()] = token
+func (r Rx) AddAccessToken(recipient string, token string) {
+	r.tokens[recipient] = token
 }
 
-func (r Rx) GetAccessToken(recipient sdk.AccAddress) (string, bool) {
-	v, ok := r.tokens[recipient.String()]
+func (r Rx) GetAccessToken(recipient string) (string, bool) {
+	v, ok := r.tokens[recipient]
 	return v, ok
 }

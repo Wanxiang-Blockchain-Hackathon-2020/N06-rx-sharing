@@ -7,5 +7,5 @@ import (
 // SupplyKeeper is required for mining coin
 type AdminKeeper interface {
 	// SaleDrugs is used for drugstore to sale drugs on blockchain.
-	SaleDrugs(ctx sdk.Context, patient sdk.AccAddress, id string, drugstore sdk.AccAddress) error
+	SaleDrugs(ctx sdk.Context, patient string, id string, drugstore string) error
 }

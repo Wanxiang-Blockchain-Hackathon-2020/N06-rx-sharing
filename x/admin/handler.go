@@ -28,7 +28,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 // Handle a message to Register Docter
 func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDocter) (*sdk.Result, error) {
 	keeper.Logger(ctx).Info("received message: %s", msg)
-	err := keeper.RegisterDoctor(ctx, msg.Address, msg.Name, msg.Gender, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
+	err := keeper.RegisterDoctor(ctx, msg.PubKey, msg.Name, msg.Gender, msg.Hospital, msg.Department, msg.Title, msg.Introduction)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func handleMsgRegisterDocter(ctx sdk.Context, keeper Keeper, msg types.MsgRegist
 func handleMsgRegisterDrugStore(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterDrugStore) (*sdk.Result, error) {
 
 	keeper.Logger(ctx).Info("received message: %s", msg)
-	err := keeper.RegisterDrugstore(ctx, msg.Address, msg.Name, msg.Phone, msg.Group, msg.BizTime, msg.Location)
+	err := keeper.RegisterDrugstore(ctx, msg.Pubkey, msg.Name, msg.Phone, msg.Group, msg.BizTime, msg.Location)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func handleMsgRegisterDrugStore(ctx sdk.Context, keeper Keeper, msg types.MsgReg
 func handleMsgRegisterPatient(ctx sdk.Context, keeper Keeper, msg types.MsgRegisterPatient) (*sdk.Result, error) {
 
 	keeper.Logger(ctx).Info("received message: %s", msg)
-	err := keeper.RegisterPatient(ctx, msg.Address, msg.Name, msg.Gender, msg.Birthday, msg.Encrypted, msg.Envelope)
+	err := keeper.RegisterPatient(ctx, msg.Pubkey, msg.Name, msg.Gender, msg.Birthday, msg.Encrypted, msg.Envelope)
 	if err != nil {
 		return nil, err
 	}

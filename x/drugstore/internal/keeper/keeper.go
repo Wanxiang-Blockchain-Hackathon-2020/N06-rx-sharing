@@ -33,6 +33,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // RegisterPatient register patient on blockchain.
-func (k Keeper) SaleDrugs(ctx sdk.Context, patient sdk.AccAddress, id string, drugstore sdk.AccAddress) error {
+func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, id string, drugstore string) error {
 	return k.ap.SaleDrugs(ctx, patient, id, drugstore)
 }

@@ -32,7 +32,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) Authorize(ctx sdk.Context, patient sdk.AccAddress, id string, recipient sdk.AccAddress, token string) error {
+func (k Keeper) Authorize(ctx sdk.Context, patient string, id string, recipient string, token string) error {
 
 	return k.ap.Authorize(ctx, patient, id, recipient, token)
 }

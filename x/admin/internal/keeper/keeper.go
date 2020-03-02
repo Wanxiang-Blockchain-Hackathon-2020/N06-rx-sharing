@@ -32,13 +32,13 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // RegisterPatient register patient on blockchain.
-func (k Keeper) RegisterPatient(ctx sdk.Context, address sdk.AccAddress, name string, sex string, birthday time.Time, encrypted string, envelope string) error {
+func (k Keeper) RegisterPatient(ctx sdk.Context, pubkey string, name string, sex string, birthday time.Time, encrypted string, envelope string) error {
 
-	if k.hasPatient(ctx, address) {
+	if k.hasPatient(ctx, pubkey) {
 		return types.ErrPatientExisted
 	}
 
-	p := types.NewPatient(address, name, sex, birthday, encrypted, envelope)
+	p := types.NewPatient(pubkey, name, sex, birthday, encrypted, envelope)
 
 	k.SavePatient(ctx, p)
 
@@ -46,13 +46,13 @@ func (k Keeper) RegisterPatient(ctx sdk.Context, address sdk.AccAddress, name st
 }
 
 // RegisterPatient register patient on blockchain.
-func (k Keeper) RegisterDoctor(ctx sdk.Context, address sdk.AccAddress, name string, sex string, hospital string, department string, title string, introduction string) error {
+func (k Keeper) RegisterDoctor(ctx sdk.Context, pubkey string, name string, sex string, hospital string, department string, title string, introduction string) error {
 
-	if k.hasDoctor(ctx, address) {
+	if k.hasDoctor(ctx, pubkey) {
 		return types.ErrDoctorExisted
 	}
 
-	d := types.NewDoctor(address, name, sex, hospital, department, title, introduction)
+	d := types.NewDoctor(pubkey, name, sex, hospital, department, title, introduction)
 
 	k.SaveDoctor(ctx, d)
 
@@ -60,13 +60,13 @@ func (k Keeper) RegisterDoctor(ctx sdk.Context, address sdk.AccAddress, name str
 }
 
 // RegisterPatient register patient on blockchain.
-func (k Keeper) RegisterDrugstore(ctx sdk.Context, address sdk.AccAddress, name string, phone string, group string, biztime string, location string) error {
+func (k Keeper) RegisterDrugstore(ctx sdk.Context, pubkey string, name string, phone string, group string, biztime string, location string) error {
 
-	if k.hasDrugstore(ctx, address) {
+	if k.hasDrugstore(ctx, pubkey) {
 		return types.ErrDrugStoreExisted
 	}
 
-	p := types.NewDrugStore(address, name, phone, group, biztime, location)
+	p := types.NewDrugStore(pubkey, name, phone, group, biztime, location)
 
 	k.SaveDrugStore(ctx, p)
 
@@ -74,7 +74,7 @@ func (k Keeper) RegisterDrugstore(ctx sdk.Context, address sdk.AccAddress, name 
 }
 
 // RegisterPatient register patient on blockchain.
-func (k Keeper) Prescribe(ctx sdk.Context, doctor sdk.AccAddress, patient sdk.AccAddress, encrypted string, memo string, token string) error {
+func (k Keeper) Prescribe(ctx sdk.Context, doctor string, patient string, encrypted string, memo string, token string) error {
 
 	var ch types.CaseHistory
 
@@ -99,7 +99,7 @@ func (k Keeper) Prescribe(ctx sdk.Context, doctor sdk.AccAddress, patient sdk.Ac
 	return nil
 }
 
-func (k Keeper) Authorize(ctx sdk.Context, patient sdk.AccAddress, id string, recipient sdk.AccAddress, token string) error {
+func (k Keeper) Authorize(ctx sdk.Context, patient string, id string, recipient string, token string) error {
 
 	if !k.hasCaseHistory(ctx, patient) {
 		return types.ErrDontHaveRx
@@ -124,7 +124,7 @@ func (k Keeper) Authorize(ctx sdk.Context, patient sdk.AccAddress, id string, re
 	return nil
 }
 
-func (k Keeper) SaleDrugs(ctx sdk.Context, patient sdk.AccAddress, id string, drugstore sdk.AccAddress) error {
+func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, id string, drugstore string) error {
 
 	if !k.hasCaseHistory(ctx, patient) {
 		return types.ErrDontHaveRx
@@ -172,9 +172,9 @@ func (k Keeper) SaleDrugs(ctx sdk.Context, patient sdk.AccAddress, id string, dr
 	return nil
 }
 
-func (k Keeper) GetPatient(ctx sdk.Context, address sdk.AccAddress) (types.Patient, error) {
+func (k Keeper) GetPatient(ctx sdk.Context, pubkey string) (types.Patient, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(keymap(types.Prefix_Patient, address))
+	bz := store.Get(keymap(types.Prefix_Patient, pubkey))
 	var data types.Patient
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
 	if err != nil {
@@ -186,12 +186,12 @@ func (k Keeper) GetPatient(ctx sdk.Context, address sdk.AccAddress) (types.Patie
 
 func (k Keeper) SavePatient(ctx sdk.Context, patient types.Patient) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(keymap(types.Prefix_Patient, patient.Address), k.cdc.MustMarshalBinaryBare(patient))
+	store.Set(keymap(types.Prefix_Patient, patient.Pubkey), k.cdc.MustMarshalBinaryBare(patient))
 }
 
-func (k Keeper) GetDoctor(ctx sdk.Context, address sdk.AccAddress) (types.Doctor, error) {
+func (k Keeper) GetDoctor(ctx sdk.Context, pubkey string) (types.Doctor, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(keymap(types.Prefix_Doctor, address))
+	bz := store.Get(keymap(types.Prefix_Doctor, pubkey))
 	var data types.Doctor
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
 	if err != nil {
@@ -203,12 +203,12 @@ func (k Keeper) GetDoctor(ctx sdk.Context, address sdk.AccAddress) (types.Doctor
 
 func (k Keeper) SaveDoctor(ctx sdk.Context, doctor types.Doctor) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(keymap(types.Prefix_Doctor, doctor.Address), k.cdc.MustMarshalBinaryBare(doctor))
+	store.Set(keymap(types.Prefix_Doctor, doctor.Pubkey), k.cdc.MustMarshalBinaryBare(doctor))
 }
 
-func (k Keeper) GetDrugstore(ctx sdk.Context, address sdk.AccAddress) (types.DrugStore, error) {
+func (k Keeper) GetDrugstore(ctx sdk.Context, pubkey string) (types.DrugStore, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(keymap(types.Prefix_DrugStore, address))
+	bz := store.Get(keymap(types.Prefix_DrugStore, pubkey))
 	var data types.DrugStore
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
 	if err != nil {
@@ -220,12 +220,12 @@ func (k Keeper) GetDrugstore(ctx sdk.Context, address sdk.AccAddress) (types.Dru
 
 func (k Keeper) SaveDrugStore(ctx sdk.Context, drugstore types.DrugStore) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(keymap(types.Prefix_DrugStore, drugstore.Address), k.cdc.MustMarshalBinaryBare(drugstore))
+	store.Set(keymap(types.Prefix_DrugStore, drugstore.Pubkey), k.cdc.MustMarshalBinaryBare(drugstore))
 }
 
-func (k Keeper) GetCaseHistory(ctx sdk.Context, address sdk.AccAddress) (types.CaseHistory, error) {
+func (k Keeper) GetCaseHistory(ctx sdk.Context, pubkey string) (types.CaseHistory, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(keymap(types.Prefix_CaseHistory, address))
+	bz := store.Get(keymap(types.Prefix_CaseHistory, pubkey))
 	var data types.CaseHistory
 	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
 	if err != nil {
@@ -240,27 +240,27 @@ func (k Keeper) SaveCaseHistory(ctx sdk.Context, history types.CaseHistory) {
 	store.Set(keymap(types.Prefix_CaseHistory, history.Patient), k.cdc.MustMarshalBinaryBare(history))
 }
 
-func keymap(prefix string, addr sdk.AccAddress) []byte {
+func keymap(prefix string, key string) []byte {
 	keyBuf := bytes.NewBufferString(prefix)
-	keyBuf.Write(addr.Bytes())
+	keyBuf.Write([]byte(key))
 	return keyBuf.Bytes()
 }
 
 // has check if the key is present in the store or not
-func (k Keeper) has(ctx sdk.Context, key sdk.AccAddress, prefix string) bool {
+func (k Keeper) has(ctx sdk.Context, key string, prefix string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(keymap(prefix, key))
 }
 
-func (k Keeper) hasDoctor(ctx sdk.Context, key sdk.AccAddress) bool {
+func (k Keeper) hasDoctor(ctx sdk.Context, key string) bool {
 	return k.has(ctx, key, types.Prefix_Doctor)
 }
-func (k Keeper) hasPatient(ctx sdk.Context, key sdk.AccAddress) bool {
+func (k Keeper) hasPatient(ctx sdk.Context, key string) bool {
 	return k.has(ctx, key, types.Prefix_Patient)
 }
-func (k Keeper) hasDrugstore(ctx sdk.Context, key sdk.AccAddress) bool {
+func (k Keeper) hasDrugstore(ctx sdk.Context, key string) bool {
 	return k.has(ctx, key, types.Prefix_DrugStore)
 }
-func (k Keeper) hasCaseHistory(ctx sdk.Context, key sdk.AccAddress) bool {
+func (k Keeper) hasCaseHistory(ctx sdk.Context, key string) bool {
 	return k.has(ctx, key, types.Prefix_CaseHistory)
 }

@@ -12,14 +12,16 @@ const RouterKey = ModuleName // this was defined in your key.go file
 
 // MsgAuthorizeRx defines a message to authorize dragstore accessing rx
 type MsgSaleDrugs struct {
-	Patient   sdk.AccAddress `json:"patient"`
-	DrugStore sdk.AccAddress `json:"drugstore"`
+	From      sdk.AccAddress `json:"from"`
+	Patient   string         `json:"patient"`
+	DrugStore string         `json:"drugstore"`
 	ID        string         `json:"id"` // 处方ID
 }
 
 // NewMsgSaleDrugs is a constructor function for MsgSaleDrugs
-func NewMsgSaleDrugs(patient sdk.AccAddress, drugstore sdk.AccAddress, id string) MsgSaleDrugs {
+func NewMsgSaleDrugs(from sdk.AccAddress, patient string, drugstore string, id string) MsgSaleDrugs {
 	return MsgSaleDrugs{
+		From:      from,
 		Patient:   patient,
 		DrugStore: drugstore,
 		ID:        id,
@@ -34,14 +36,14 @@ func (msg MsgSaleDrugs) Type() string { return "sale_drugs" }
 
 // ValidateBasic runs stateless checks on the message
 func (msg MsgSaleDrugs) ValidateBasic() error {
-	if msg.Patient.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Patient.String())
-	}
-	if msg.DrugStore.Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.DrugStore.String())
-	}
 	if len(msg.ID) < 1 {
 		return sdkerrors.Wrap(ErrInputInvalid, msg.ID)
+	}
+	if len(msg.Patient) < 1 {
+		return sdkerrors.Wrap(ErrInputInvalid, msg.Patient)
+	}
+	if len(msg.DrugStore) < 1 {
+		return sdkerrors.Wrap(ErrInputInvalid, msg.DrugStore)
 	}
 	return nil
 }
@@ -53,5 +55,5 @@ func (msg MsgSaleDrugs) GetSignBytes() []byte {
 
 // GetSigners defines whose signature is required
 func (msg MsgSaleDrugs) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Patient}
+	return []sdk.AccAddress{msg.From}
 }
