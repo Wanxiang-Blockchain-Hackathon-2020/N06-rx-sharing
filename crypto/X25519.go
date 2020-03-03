@@ -110,3 +110,21 @@ func decryptX25519(pubkey string, seed []byte, envelope string, cryptText string
 	}
 	return string(content), nil
 }
+
+func renewEnvelope(seed []byte, from string, to string, envelope string) (string, error) {
+	keypair := ed25519.GenerateKeyPair(seed)
+	b64pk, _ := hex.DecodeString(from)
+	sk := ed25519.SharedKey(keypair.PrivateKey, []uint8(b64pk))
+
+	datakey, err := aesDecrypt(sk, envelope)
+	if err != nil {
+		return "", err
+	}
+	b64pkNew, _ := hex.DecodeString(to)
+	skNew := ed25519.SharedKey(keypair.PrivateKey, []uint8(b64pkNew))
+	news, err2 := aesEncrypt([]byte(skNew), datakey) //生成密码信封
+	if err2 != nil {
+		return "", err2
+	}
+	return news, nil
+}

@@ -42,6 +42,7 @@ func NewCaseHistory(rxs ...Rx) CaseHistory {
 // Rx is a struct that contains all the metadata of a Rx
 type Rx struct {
 	ID        string    `json:"id"`
+	Doctor    string    `json:"doctor"`
 	Patient   string    `json:"patient"`
 	Status    sdk.Int   `json:"status"`
 	Time      time.Time `json:"time"`
@@ -54,15 +55,16 @@ type Rx struct {
 func genRxId(pubkey string) string {
 	time.Now().Unix()
 	id := make([]string, 2)
-	id[0] = pubkey[:2]
+	id[0] = pubkey[:3]
 	id[1] = strconv.FormatInt(time.Now().Unix(), 10)
-	return strings.Join(id, "-")
+	return strings.Join(id, "")
 }
 
 // NewRx returns a new Rx
-func NewRx(pubkey string, encrypted string, memo string) Rx {
+func NewRx(doctor string, pubkey string, encrypted string, memo string) Rx {
 	return Rx{
 		ID:        genRxId(pubkey),
+		Doctor:    doctor,
 		Patient:   pubkey,
 		Status:    sdk.NewInt(1),
 		Time:      time.Now(),
@@ -73,8 +75,8 @@ func NewRx(pubkey string, encrypted string, memo string) Rx {
 
 // implement fmt.Stringer
 func (r Rx) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`ID: %s,Patient: %s, Status: %s, Time: %s, Encrypted: %s, Memo: %s`,
-		r.ID, r.Patient, r.Status, r.Time, r.Encrypted, r.Memo))
+	return strings.TrimSpace(fmt.Sprintf(`ID: %s,Doctor: %s, Patient: %s, Status: %s, Time: %s, Encrypted: %s, Memo: %s`,
+		r.ID, r.Doctor, r.Patient, r.Status, r.Time, r.Encrypted, r.Memo))
 }
 
 //impliment exported.Rx

@@ -18,12 +18,13 @@ type MsgAuthorizeRx struct {
 }
 
 // NewMsgAuthorizeRx is a constructor function for MsgAuthorizeRx
-func NewMsgAuthorizeRx(from sdk.AccAddress, patient string, drugstore string, id string) MsgAuthorizeRx {
+func NewMsgAuthorizeRx(from sdk.AccAddress, patient string, drugstore string, id string, envelope string) MsgAuthorizeRx {
 	return MsgAuthorizeRx{
 		From:      from,
 		Patient:   patient,
 		DrugStore: drugstore,
 		ID:        id,
+		Envelope:  envelope,
 	}
 }
 

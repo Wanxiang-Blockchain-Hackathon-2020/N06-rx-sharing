@@ -14,4 +14,5 @@ var (
 	ErrDrugstoreNotExisted = sdkerrors.Register(ModuleName, 6, "Drugstore does not existed")
 	ErrIllegalAccess       = sdkerrors.Register(ModuleName, 7, "Illegal Rx Access")
 	ErrDuplicatedUse       = sdkerrors.Register(ModuleName, 8, "Rx can be used only once.")
+	ErrRxDoesNotExists     = sdkerrors.Register(ModuleName, 9, "Rx does not exists.")
 )

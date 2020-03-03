@@ -38,3 +38,11 @@ func Dencrypt(crypto string, pubkey string, seed []byte, envelope string, cryptC
 		return decryptX25519(pubkey, seed, envelope, cryptContent)
 	}
 }
+
+func RenewEnvelope(crypto string, seed []byte, old string, news string, envelope string) (string, error) {
+	if crypto == "sm2" {
+		return "", nil
+	} else {
+		return renewEnvelope(seed, old, news, envelope)
+	}
+}

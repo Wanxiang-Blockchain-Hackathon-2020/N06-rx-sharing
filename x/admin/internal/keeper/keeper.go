@@ -89,7 +89,7 @@ func (k Keeper) Prescribe(ctx sdk.Context, doctor string, patient string, encryp
 	} else {
 		ch = exported.NewCaseHistory()
 	}
-	rx := exported.NewRx(patient, encrypted, memo)
+	rx := exported.NewRx(doctor, patient, encrypted, memo)
 	ch = append(ch, rx)
 
 	k.SaveCaseHistory(ctx, patient, ch)
@@ -108,75 +108,48 @@ func (k Keeper) Prescribe(ctx sdk.Context, doctor string, patient string, encryp
 
 func (k Keeper) Authorize(ctx sdk.Context, patient string, id string, recipient string, token string) error {
 
-	//if !k.hasCaseHistory(ctx, patient) {
-	//	return types.ErrDontHaveRx
-	//}
-	//ch, err := k.GetCaseHistory(ctx, patient)
-	//if err != nil {
-	//	return err
-	//}
+	permits, _ := k.GetRxPermission(ctx, id)
 
-	//rx, ok := ch.GetRx(id)
-	//if !ok {
-	//	return types.ErrDontHaveRx
-	//}
-	//
-	////rx.AddAccessToken(recipient, token)
-	//rx.SetStatus(sdk.NewInt(types.Rx_LOCKING))
-	//
-	//ch.SetRx(rx.GetID(), rx)
-	//
-	//k.SaveCaseHistory(ctx, ch)
+	for _, t := range permits { //过滤重复授权
+		if t.Visitor == recipient {
+			return nil
+		}
+	}
+
+	permits = append(permits, exported.NewPermission(recipient, token))
+
+	k.SaveRxPermission(ctx, id, permits)
 
 	return nil
 }
 
-func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, id string, drugstore string) error {
+func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, rxid string, drugstore string) error {
 
-	//if !k.hasCaseHistory(ctx, patient) {
-	//	return types.ErrDontHaveRx
-	//}
-	//ch, err := k.GetCaseHistory(ctx, patient)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	////处方是否存在
-	//rx, ok := ch.GetRx(id)
-	//if !ok {
-	//	return types.ErrDontHaveRx
-	//}
-	//
-	////药店是否存在
-	//if !k.hasDrugstore(ctx, drugstore) {
-	//	return types.ErrDrugstoreNotExisted
-	//}
-	//
-	//ds, err2 := k.GetDrugstore(ctx, drugstore)
-	//if err2 != nil {
-	//	return types.ErrDrugstoreNotExisted
-	//}
+	if k.hasCaseHistory(ctx, patient) {
+		chs, err := k.GetCaseHistory(ctx, patient)
+		if err == nil {
+			for i, t := range chs {
+				if t.ID == rxid && t.Status != sdk.NewInt(types.Rx_USED) {
+					permits, err := k.GetRxPermission(ctx, rxid)
+					if err == nil {
+						for _, p := range permits {
+							if p.Visitor == drugstore {
+								t.Status = sdk.NewInt(types.Rx_USED)
+								t.SaleTime = time.Now()
+								t.SaleStore = drugstore
 
-	//是否获取用户授权
-	//_, ok2 := rx.GetAccessToken(drugstore)
-	//if !ok2 {
-	//	return types.ErrIllegalAccess
-	//}
+								chs[i] = t
+								k.SaveCaseHistory(ctx, patient, chs)
+							}
+						}
+					}
+				}
+			}
 
-	////处方转态是否可用
-	//if rx.GetStatus() == sdk.NewInt(types.Rx_USED) {
-	//	return types.ErrDuplicatedUse
-	//}
-	//
-	//rx.SetStatus(sdk.NewInt(types.Rx_USED))
-	//rx.SetSaleStore(ds.Name)
-	//rx.SetSaleTime(time.Now())
-	//
-	//ch.SetRx(rx.GetID(), rx)
-	//
-	//k.SaveCaseHistory(ctx, ch)
+		}
+	}
 
-	return nil
+	return types.ErrRxDoesNotExists
 }
 
 func (k Keeper) GetPatient(ctx sdk.Context, pubkey string) types.Patient {
@@ -257,16 +230,17 @@ func (k Keeper) GetRxs(ctx sdk.Context, patient string) (exported.CaseHistory, e
 }
 
 func (k Keeper) GetRx(ctx sdk.Context, patient string, id string) (exported.Rx, error) {
-	//rxs,err := k.GetRxs(ctx, patient)
-	//if err!=nil {
-	return exported.Rx{}, nil
-	//}
-	//
-	//rx,ok := rxs[id]
-	//if !ok {
-	//	return rx, types.ErrRxDoesNotExists
-	//}
-	//return rx,nil
+	rxs, err := k.GetRxs(ctx, patient)
+	if err != nil {
+		return exported.Rx{}, err
+	}
+
+	for _, t := range rxs {
+		if t.ID == id {
+			return t, nil
+		}
+	}
+	return exported.Rx{}, types.ErrRxDoesNotExists
 }
 
 func (k Keeper) GetRxPermission(ctx sdk.Context, rxid string) (exported.RxPermission, error) {
