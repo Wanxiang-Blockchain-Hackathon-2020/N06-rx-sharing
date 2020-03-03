@@ -19,7 +19,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryStatus:
 			return queryStatus(ctx, path[1:], req, keeper)
 		default:
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown admin query endpoint")
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown drugstore query endpoint")
 		}
 	}
 }

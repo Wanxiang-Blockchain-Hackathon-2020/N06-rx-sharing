@@ -140,6 +140,7 @@ func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, rxid string, drugstor
 
 								chs[i] = t
 								k.SaveCaseHistory(ctx, patient, chs)
+								return nil
 							}
 						}
 					}
