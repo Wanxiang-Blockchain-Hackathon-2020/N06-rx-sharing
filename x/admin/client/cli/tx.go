@@ -30,7 +30,7 @@ func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	}
 
 	faucetTxCmd.AddCommand(flags.PostCommands(
-		GetTestCommand(cdc),
+		GetKeygenCommand(cdc),
 		GetRegisterDoctor(cdc),
 		GetRegisterDrugstore(cdc),
 		GetRegisterPatient(cdc),
@@ -39,8 +39,8 @@ func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	return faucetTxCmd
 }
 
-//GetCmdWithdraw is the CLI command for mining coin
-func GetTestCommand(cdc *codec.Codec) *cobra.Command {
+//GetKeygenCommand is the CLI command for key generation
+func GetKeygenCommand(cdc *codec.Codec) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "keygen",
@@ -118,6 +118,12 @@ func GetRegisterDoctor(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().String("introduction", "", "introduction of doctor")
 	cmd.Flags().String("pubkey", "", "address of doctor")
 
+	cmd.MarkFlagRequired("name")
+	cmd.MarkFlagRequired("hospital")
+	cmd.MarkFlagRequired("department")
+	cmd.MarkFlagRequired("title")
+	cmd.MarkFlagRequired("pubkey")
+
 	return cmd
 }
 
@@ -159,9 +165,13 @@ func GetRegisterPatient(cdc *codec.Codec) *cobra.Command {
 
 	cmd.Flags().String("name", "", "name of patient")
 	cmd.Flags().String("gender", "", "gender of patient")
-	cmd.Flags().String("birthday", "", "hospital of patient")
-	cmd.Flags().String("other", "", "department of patient")
+	cmd.Flags().String("birthday", "", "birthday of patient, [2000-10-10]")
+	cmd.Flags().String("other", "", "others of patient")
 	cmd.Flags().String("pubkey", "", "pubkey of patient")
+
+	cmd.MarkFlagRequired("name")
+	cmd.MarkFlagRequired("birthday")
+	cmd.MarkFlagRequired("pubkey")
 
 	return cmd
 }
@@ -203,5 +213,7 @@ func GetRegisterDrugstore(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().String("location", "", "address of drug store")
 	cmd.Flags().String("pubkey", "", "pubkey of drug store")
 
+	cmd.MarkFlagRequired("name")
+	cmd.MarkFlagRequired("pubkey")
 	return cmd
 }

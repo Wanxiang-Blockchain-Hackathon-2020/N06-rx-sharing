@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"fmt"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/exported"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/internal/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -76,7 +77,7 @@ func (k Keeper) RegisterDrugstore(ctx sdk.Context, pubkey string, name string, p
 // RegisterPatient register patient on blockchain.
 func (k Keeper) Prescribe(ctx sdk.Context, doctor string, patient string, encrypted string, memo string, token string) error {
 
-	var ch types.CaseHistory
+	var ch exported.CaseHistory
 
 	if k.hasCaseHistory(ctx, patient) {
 		chs, err := k.GetCaseHistory(ctx, patient)
@@ -86,102 +87,104 @@ func (k Keeper) Prescribe(ctx sdk.Context, doctor string, patient string, encryp
 			ch = chs
 		}
 	} else {
-		ch = types.NewCaseHistory(patient)
+		ch = exported.NewCaseHistory()
 	}
-	rx := types.NewRx(patient, encrypted, memo)
+	rx := exported.NewRx(patient, encrypted, memo)
+	ch = append(ch, rx)
 
-	// make sure patient has access right
-	rx.AddAccessToken(patient, token)
-	ch.AddRx(rx)
+	k.SaveCaseHistory(ctx, patient, ch)
 
-	k.SaveCaseHistory(ctx, ch)
+	var rp exported.RxPermission
+	if k.hasRxPermission(ctx, rx.GetID()) {
+		rp, _ = k.GetRxPermission(ctx, rx.GetID())
+	} else {
+		rp = exported.NewRxPermission()
+	}
+	rp = append(rp, exported.NewPermission(patient, token))
+	k.SaveRxPermission(ctx, rx.GetID(), rp)
 
 	return nil
 }
 
 func (k Keeper) Authorize(ctx sdk.Context, patient string, id string, recipient string, token string) error {
 
-	if !k.hasCaseHistory(ctx, patient) {
-		return types.ErrDontHaveRx
-	}
-	ch, err := k.GetCaseHistory(ctx, patient)
-	if err != nil {
-		return err
-	}
+	//if !k.hasCaseHistory(ctx, patient) {
+	//	return types.ErrDontHaveRx
+	//}
+	//ch, err := k.GetCaseHistory(ctx, patient)
+	//if err != nil {
+	//	return err
+	//}
 
-	rx, ok := ch.GetRx(id)
-	if !ok {
-		return types.ErrDontHaveRx
-	}
-
-	rx.AddAccessToken(recipient, token)
-	rx.Status = sdk.NewInt(types.Rx_LOCKING)
-
-	ch.SetRx(rx.ID, rx)
-
-	k.SaveCaseHistory(ctx, ch)
+	//rx, ok := ch.GetRx(id)
+	//if !ok {
+	//	return types.ErrDontHaveRx
+	//}
+	//
+	////rx.AddAccessToken(recipient, token)
+	//rx.SetStatus(sdk.NewInt(types.Rx_LOCKING))
+	//
+	//ch.SetRx(rx.GetID(), rx)
+	//
+	//k.SaveCaseHistory(ctx, ch)
 
 	return nil
 }
 
 func (k Keeper) SaleDrugs(ctx sdk.Context, patient string, id string, drugstore string) error {
 
-	if !k.hasCaseHistory(ctx, patient) {
-		return types.ErrDontHaveRx
-	}
-	ch, err := k.GetCaseHistory(ctx, patient)
-	if err != nil {
-		return err
-	}
-
-	//处方是否存在
-	rx, ok := ch.GetRx(id)
-	if !ok {
-		return types.ErrDontHaveRx
-	}
-
-	//药店是否存在
-	if !k.hasDrugstore(ctx, drugstore) {
-		return types.ErrDrugstoreNotExisted
-	}
-
-	ds, err2 := k.GetDrugstore(ctx, drugstore)
-	if err2 != nil {
-		return types.ErrDrugstoreNotExisted
-	}
+	//if !k.hasCaseHistory(ctx, patient) {
+	//	return types.ErrDontHaveRx
+	//}
+	//ch, err := k.GetCaseHistory(ctx, patient)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	////处方是否存在
+	//rx, ok := ch.GetRx(id)
+	//if !ok {
+	//	return types.ErrDontHaveRx
+	//}
+	//
+	////药店是否存在
+	//if !k.hasDrugstore(ctx, drugstore) {
+	//	return types.ErrDrugstoreNotExisted
+	//}
+	//
+	//ds, err2 := k.GetDrugstore(ctx, drugstore)
+	//if err2 != nil {
+	//	return types.ErrDrugstoreNotExisted
+	//}
 
 	//是否获取用户授权
-	_, ok2 := rx.GetAccessToken(drugstore)
-	if !ok2 {
-		return types.ErrIllegalAccess
-	}
+	//_, ok2 := rx.GetAccessToken(drugstore)
+	//if !ok2 {
+	//	return types.ErrIllegalAccess
+	//}
 
-	//处方转态是否可用
-	if rx.Status == sdk.NewInt(types.Rx_USED) {
-		return types.ErrDuplicatedUse
-	}
-
-	rx.Status = sdk.NewInt(types.Rx_USED)
-	rx.SaleStore = ds.Name
-	rx.SaleTime = time.Now()
-
-	ch.SetRx(rx.ID, rx)
-
-	k.SaveCaseHistory(ctx, ch)
+	////处方转态是否可用
+	//if rx.GetStatus() == sdk.NewInt(types.Rx_USED) {
+	//	return types.ErrDuplicatedUse
+	//}
+	//
+	//rx.SetStatus(sdk.NewInt(types.Rx_USED))
+	//rx.SetSaleStore(ds.Name)
+	//rx.SetSaleTime(time.Now())
+	//
+	//ch.SetRx(rx.GetID(), rx)
+	//
+	//k.SaveCaseHistory(ctx, ch)
 
 	return nil
 }
 
-func (k Keeper) GetPatient(ctx sdk.Context, pubkey string) (types.Patient, error) {
+func (k Keeper) GetPatient(ctx sdk.Context, pubkey string) types.Patient {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(keymap(types.Prefix_Patient, pubkey))
 	var data types.Patient
-	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
-	if err != nil {
-		return data, err
-	} else {
-		return data, nil
-	}
+	k.cdc.MustUnmarshalBinaryBare(bz, &data)
+	return data
 }
 
 func (k Keeper) SavePatient(ctx sdk.Context, patient types.Patient) {
@@ -193,7 +196,7 @@ func (k Keeper) GetDoctor(ctx sdk.Context, pubkey string) (types.Doctor, error) 
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(keymap(types.Prefix_Doctor, pubkey))
 	var data types.Doctor
-	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
+	err := k.cdc.UnmarshalBinaryBare(bz, &data)
 	if err != nil {
 		return data, err
 	} else {
@@ -210,7 +213,7 @@ func (k Keeper) GetDrugstore(ctx sdk.Context, pubkey string) (types.DrugStore, e
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(keymap(types.Prefix_DrugStore, pubkey))
 	var data types.DrugStore
-	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
+	err := k.cdc.UnmarshalBinaryBare(bz, &data)
 	if err != nil {
 		return data, err
 	} else {
@@ -223,11 +226,11 @@ func (k Keeper) SaveDrugStore(ctx sdk.Context, drugstore types.DrugStore) {
 	store.Set(keymap(types.Prefix_DrugStore, drugstore.Pubkey), k.cdc.MustMarshalBinaryBare(drugstore))
 }
 
-func (k Keeper) GetCaseHistory(ctx sdk.Context, pubkey string) (types.CaseHistory, error) {
+func (k Keeper) GetCaseHistory(ctx sdk.Context, pubkey string) (exported.CaseHistory, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(keymap(types.Prefix_CaseHistory, pubkey))
-	var data types.CaseHistory
-	err := k.cdc.UnmarshalBinaryLengthPrefixed(bz, &data)
+	var data exported.CaseHistory
+	err := k.cdc.UnmarshalBinaryBare(bz, &data)
 	if err != nil {
 		return data, err
 	} else {
@@ -235,9 +238,52 @@ func (k Keeper) GetCaseHistory(ctx sdk.Context, pubkey string) (types.CaseHistor
 	}
 }
 
-func (k Keeper) SaveCaseHistory(ctx sdk.Context, history types.CaseHistory) {
+func (k Keeper) SaveCaseHistory(ctx sdk.Context, pubkey string, history exported.CaseHistory) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(keymap(types.Prefix_CaseHistory, history.Patient), k.cdc.MustMarshalBinaryBare(history))
+	byt, err := k.cdc.MarshalBinaryBare(history)
+	if err != nil {
+		fmt.Println(err)
+	}
+	store.Set(keymap(types.Prefix_CaseHistory, pubkey), byt)
+}
+
+func (k Keeper) GetRxs(ctx sdk.Context, patient string) (exported.CaseHistory, error) {
+	ch, err := k.GetCaseHistory(ctx, patient)
+	if err != nil {
+		return nil, err
+	} else {
+		return ch, nil
+	}
+}
+
+func (k Keeper) GetRx(ctx sdk.Context, patient string, id string) (exported.Rx, error) {
+	//rxs,err := k.GetRxs(ctx, patient)
+	//if err!=nil {
+	return exported.Rx{}, nil
+	//}
+	//
+	//rx,ok := rxs[id]
+	//if !ok {
+	//	return rx, types.ErrRxDoesNotExists
+	//}
+	//return rx,nil
+}
+
+func (k Keeper) GetRxPermission(ctx sdk.Context, rxid string) (exported.RxPermission, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(keymap(types.Prefix_RxPermission, rxid))
+	var data exported.RxPermission
+	err := k.cdc.UnmarshalBinaryBare(bz, &data)
+	if err != nil {
+		return data, err
+	} else {
+		return data, nil
+	}
+}
+
+func (k Keeper) SaveRxPermission(ctx sdk.Context, rxid string, rxPermission exported.RxPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(keymap(types.Prefix_RxPermission, rxid), k.cdc.MustMarshalBinaryBare(rxPermission))
 }
 
 func keymap(prefix string, key string) []byte {
@@ -263,4 +309,7 @@ func (k Keeper) hasDrugstore(ctx sdk.Context, key string) bool {
 }
 func (k Keeper) hasCaseHistory(ctx sdk.Context, key string) bool {
 	return k.has(ctx, key, types.Prefix_CaseHistory)
+}
+func (k Keeper) hasRxPermission(ctx sdk.Context, key string) bool {
+	return k.has(ctx, key, types.Prefix_RxPermission)
 }

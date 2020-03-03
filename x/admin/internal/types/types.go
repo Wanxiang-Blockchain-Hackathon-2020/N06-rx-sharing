@@ -141,100 +141,122 @@ func (ch CaseHistory) UpdateStatus(id string, status sdk.Int) {
 
 /// Rx 处方
 
-// Rx is a struct that contains all the metadata of a Rx
-type rx struct {
-	ID        string            `json:"id"`
-	Patient   string            `json:"patient"`
-	Status    sdk.Int           `json:"status"`
-	Time      time.Time         `json:"time"`
-	Encrypted string            `json:"encrypted"` //加密处方数据
-	tokens    map[string]string `json:"tokens"`    //秘钥信封
-	Memo      string            `json:"memo"`
-	SaleStore string            `json:"sale_store"` //在哪个门店使用的
-	SaleTime  time.Time         `json:"sale_time"`  //销售时间
-}
-
-func genRxId(pubkey string) string {
-	time.Now().Unix()
-	id := []string{}
-	id = append(id, pubkey[:2])
-	id = append(id, "-")
-	id = append(id, string(time.Now().Unix()))
-	return strings.Join(id, "")
-}
+//// Rx is a struct that contains all the metadata of a Rx
+//type rx struct {
+//	ID        string            `json:"id"`
+//	Patient   string            `json:"patient"`
+//	Status    sdk.Int           `json:"status"`
+//	Time      time.Time         `json:"time"`
+//	Encrypted string            `json:"encrypted"` //加密处方数据
+//	Memo      string            `json:"memo"`
+//	SaleStore string            `json:"sale_store"` //在哪个门店使用的
+//	SaleTime  time.Time         `json:"sale_time"`  //销售时间
+//}
+//
+//func genRxId(pubkey string) string {
+//	time.Now().Unix()
+//	id := []string{}
+//	id = append(id, pubkey[:2])
+//	id = append(id, "-")
+//	id = append(id, string(time.Now().Unix()))
+//	return strings.Join(id, "")
+//}
 
 // NewRx returns a new Rx
-func NewRx(pubkey string, encrypted string, memo string) exported.Rx {
-	return rx{
-		ID:        genRxId(pubkey),
-		Patient:   pubkey,
-		Status:    sdk.NewInt(Rx_ACTIVE),
-		Time:      time.Now(),
-		Encrypted: encrypted,
-		tokens:    make(map[string]string),
-		Memo:      memo,
-	}
-}
+//func NewRx(pubkey string, encrypted string, memo string) exported.Rx {
+//	return x{
+//		ID:        genRxId(pubkey),
+//		Patient:   pubkey,
+//		Status:    sdk.NewInt(Rx_ACTIVE),
+//		Time:      time.Now(),
+//		Encrypted: encrypted,
+//		Memo:      memo,
+//	}
+//}
 
 // implement fmt.Stringer
-func (r rx) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`Patient: %s, Status: %s, Time: %s, Encrypted: %s, Token: %s, Memo: %s`,
-		r.Patient, r.Status, r.Time, r.Encrypted, r.tokens, r.Memo))
-}
-
-//impliment exported.Rx
-func (r rx) GetID() string {
-	return r.ID
-}
-func (r rx) SetID(id string) {
-	r.ID = id
-}
-func (r rx) GetPatient() string {
-	return r.Patient
-}
-func (r rx) SetPatient(p string) {
-	r.Patient = p
-}
-func (r rx) GetStatus() sdk.Int {
-	return r.Status
-}
-func (r rx) SetStatus(status sdk.Int) {
-	r.Status = status
-}
-func (r rx) GetTime() time.Time {
-	return r.Time
-}
-func (r rx) SetTime(t time.Time) {
-	r.Time = t
-}
-func (r rx) GetEncrypted() string {
-	return r.Encrypted
-}
-func (r rx) SetEncrypted(en string) {
-	r.Encrypted = en
-}
-func (r rx) GetMemo() string {
-	return r.Memo
-}
-func (r rx) SetMemo(memo string) {
-	r.Memo = memo
-}
-func (r rx) GetSaleStore() string {
-	return r.SaleStore
-}
-func (r rx) SetSaleStore(s string) {
-	r.SaleStore = s
-}
-func (r rx) GetSaleTime() time.Time {
-	return r.SaleTime
-}
-func (r rx) SetSaleTime(t time.Time) {
-	r.SaleTime = t
-}
-func (r rx) AddAccessToken(recipient string, token string) {
-	r.tokens[recipient] = token
-}
-func (r rx) GetAccessToken(recipient string) (string, bool) {
-	v, ok := r.tokens[recipient]
-	return v, ok
-}
+//func (r rx) String() string {
+//	return strings.TrimSpace(fmt.Sprintf(`ID: %s,Patient: %s, Status: %s, Time: %s, Encrypted: %s, Memo: %s`,
+//		r.ID, r.Patient, r.Status, r.Time, r.Encrypted, r.Memo))
+//}
+//
+////impliment exported.Rx
+//func (r rx) GetID() string {
+//	return r.ID
+//}
+//func (r rx) SetID(id string) {
+//	r.ID = id
+//}
+//func (r rx) GetPatient() string {
+//	return r.Patient
+//}
+//func (r rx) SetPatient(p string) {
+//	r.Patient = p
+//}
+//func (r rx) GetStatus() sdk.Int {
+//	return r.Status
+//}
+//func (r rx) SetStatus(status sdk.Int) {
+//	r.Status = status
+//}
+//func (r rx) GetTime() time.Time {
+//	return r.Time
+//}
+//func (r rx) SetTime(t time.Time) {
+//	r.Time = t
+//}
+//func (r rx) GetEncrypted() string {
+//	return r.Encrypted
+//}
+//func (r rx) SetEncrypted(en string) {
+//	r.Encrypted = en
+//}
+//func (r rx) GetMemo() string {
+//	return r.Memo
+//}
+//func (r rx) SetMemo(memo string) {
+//	r.Memo = memo
+//}
+//func (r rx) GetSaleStore() string {
+//	return r.SaleStore
+//}
+//func (r rx) SetSaleStore(s string) {
+//	r.SaleStore = s
+//}
+//func (r rx) GetSaleTime() time.Time {
+//	return r.SaleTime
+//}
+//func (r rx) SetSaleTime(t time.Time) {
+//	r.SaleTime = t
+//}
+//
+//type rxPermission struct {
+//	Tokens map[string]string
+//}
+//
+//func NewRxPermission() exported.RxPermission {
+//	return rxPermission{
+//		Tokens: make(map[string]string),
+//	}
+//}
+//
+//func (p rxPermission) GetTokens() map[string]string {
+//	return p.Tokens
+//}
+//
+//func (p rxPermission) SetTokens(m map[string]string){
+//	p.Tokens = m
+//}
+//
+//func (p rxPermission) GetToken(who string) string {
+//	v,ok:=p.Tokens[who]
+//	if ok {
+//		return v
+//	}else{
+//		return ""
+//	}
+//}
+//
+//func (p rxPermission) SetToken(who string, token string)  {
+//	p.Tokens[who] = token
+//}

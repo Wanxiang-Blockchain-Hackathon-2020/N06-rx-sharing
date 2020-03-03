@@ -8,8 +8,9 @@ const (
 	StoreKey = ModuleName
 
 	// Prefix of types
-	Prefix_Doctor      = "do-"
-	Prefix_Patient     = "pa-"
-	Prefix_DrugStore   = "ds-"
-	Prefix_CaseHistory = "ch-"
+	Prefix_Doctor       = "do-"
+	Prefix_Patient      = "pa-"
+	Prefix_DrugStore    = "ds-"
+	Prefix_CaseHistory  = "ch-"
+	Prefix_RxPermission = "rp-"
 )
