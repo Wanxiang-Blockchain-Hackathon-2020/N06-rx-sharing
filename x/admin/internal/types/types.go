@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/exported"
 	"strings"
 	"time"
 
@@ -108,41 +109,41 @@ const (
 
 // Rx is a struct that contains all the metadata of a Rx
 type CaseHistory struct {
-	Patient string        `json:"patient"`
-	Rxs     map[string]Rx `json:"rxs"`
+	Patient string                 `json:"patient"`
+	Rxs     map[string]exported.Rx `json:"rxs"`
 }
 
 func NewCaseHistory(patient string) CaseHistory {
 	return CaseHistory{
 		Patient: patient,
-		Rxs:     make(map[string]Rx),
+		Rxs:     make(map[string]exported.Rx),
 	}
 }
 
-func (ch CaseHistory) AddRx(rx Rx) {
-	ch.Rxs[rx.ID] = rx
+func (ch CaseHistory) AddRx(rx exported.Rx) {
+	ch.Rxs[rx.GetID()] = rx
 }
 
-func (ch CaseHistory) SetRx(id string, rx Rx) {
+func (ch CaseHistory) SetRx(id string, rx exported.Rx) {
 	ch.Rxs[id] = rx
 }
 
-func (ch CaseHistory) GetRx(id string) (Rx, bool) {
+func (ch CaseHistory) GetRx(id string) (exported.Rx, bool) {
 	rx, ok := ch.Rxs[id]
 	return rx, ok
 }
 
 func (ch CaseHistory) UpdateStatus(id string, status sdk.Int) {
 	rx := ch.Rxs[id]
-	rx.Status = status
+	rx.SetStatus(status)
 	ch.Rxs[id] = rx
 }
 
 /// Rx 处方
 
 // Rx is a struct that contains all the metadata of a Rx
-type Rx struct {
-	ID        string            `json:"patient"`
+type rx struct {
+	ID        string            `json:"id"`
 	Patient   string            `json:"patient"`
 	Status    sdk.Int           `json:"status"`
 	Time      time.Time         `json:"time"`
@@ -163,8 +164,8 @@ func genRxId(pubkey string) string {
 }
 
 // NewRx returns a new Rx
-func NewRx(pubkey string, encrypted string, memo string) Rx {
-	return Rx{
+func NewRx(pubkey string, encrypted string, memo string) exported.Rx {
+	return rx{
 		ID:        genRxId(pubkey),
 		Patient:   pubkey,
 		Status:    sdk.NewInt(Rx_ACTIVE),
@@ -176,16 +177,64 @@ func NewRx(pubkey string, encrypted string, memo string) Rx {
 }
 
 // implement fmt.Stringer
-func (r Rx) String() string {
+func (r rx) String() string {
 	return strings.TrimSpace(fmt.Sprintf(`Patient: %s, Status: %s, Time: %s, Encrypted: %s, Token: %s, Memo: %s`,
 		r.Patient, r.Status, r.Time, r.Encrypted, r.tokens, r.Memo))
 }
 
-func (r Rx) AddAccessToken(recipient string, token string) {
+//impliment exported.Rx
+func (r rx) GetID() string {
+	return r.ID
+}
+func (r rx) SetID(id string) {
+	r.ID = id
+}
+func (r rx) GetPatient() string {
+	return r.Patient
+}
+func (r rx) SetPatient(p string) {
+	r.Patient = p
+}
+func (r rx) GetStatus() sdk.Int {
+	return r.Status
+}
+func (r rx) SetStatus(status sdk.Int) {
+	r.Status = status
+}
+func (r rx) GetTime() time.Time {
+	return r.Time
+}
+func (r rx) SetTime(t time.Time) {
+	r.Time = t
+}
+func (r rx) GetEncrypted() string {
+	return r.Encrypted
+}
+func (r rx) SetEncrypted(en string) {
+	r.Encrypted = en
+}
+func (r rx) GetMemo() string {
+	return r.Memo
+}
+func (r rx) SetMemo(memo string) {
+	r.Memo = memo
+}
+func (r rx) GetSaleStore() string {
+	return r.SaleStore
+}
+func (r rx) SetSaleStore(s string) {
+	r.SaleStore = s
+}
+func (r rx) GetSaleTime() time.Time {
+	return r.SaleTime
+}
+func (r rx) SetSaleTime(t time.Time) {
+	r.SaleTime = t
+}
+func (r rx) AddAccessToken(recipient string, token string) {
 	r.tokens[recipient] = token
 }
-
-func (r Rx) GetAccessToken(recipient string) (string, bool) {
+func (r rx) GetAccessToken(recipient string) (string, bool) {
 	v, ok := r.tokens[recipient]
 	return v, ok
 }
