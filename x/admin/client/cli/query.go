@@ -13,6 +13,7 @@ import (
 func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	nameserviceQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
+		Aliases:                    []string{"register"},
 		Short:                      "Querying commands for the rx-sharing admin module",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,

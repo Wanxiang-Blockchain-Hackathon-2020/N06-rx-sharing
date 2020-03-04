@@ -24,6 +24,7 @@ import (
 func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	faucetTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
+		Aliases:                    []string{"register"},
 		Short:                      "admin transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
