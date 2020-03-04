@@ -42,7 +42,7 @@ iMac:~ liangping$ rxcli tx admin keygen --from store
 
 #### 2 注册/登记/绑定
 
-注意：医生，药店的注册，只能有特殊权限的用户才能操作。
+注意：医生，药店的注册，只能有特殊权限的用户才能操作，操作步骤类似。
 ```
 iMac:~ liangping$ rxcli tx register patient --birthday "2000-10-10" --from ping --name "丽丽" --gender "女" --pubkey="6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d" -y --chain-id test
 height: 3
@@ -59,7 +59,7 @@ tx: null
 timestamp: ""
 
 ```
-查询绑定信息
+#### 3 查询绑定信息
 ```sh
 iMac:~ liangping$ rxcli query admin patient --chain-id test  6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
 pubkey: 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -70,7 +70,7 @@ encrypted: ""
 envelope: ""
 
 ```
-#### 3 医生：开处方
+#### 4 医生：开处方
 
 处方数据`--rx "处方明文数据"`加密上链，数据采用点对点加密，秘钥随机生成，任何人均不知道，任何第三方无法解开
 
@@ -90,7 +90,7 @@ tx: null
 timestamp: ""
 ```
 
-#### 4 患者：查看处方
+#### 5 患者：查看处方
 查看密文处方
 ```
 iMac:~ liangping$ rxcli query patient rxs --keyname ping --chain-id test
@@ -118,7 +118,7 @@ salestore: ""
 saletime: 0001-01-01T00:00:00Z
 ```
 
-#### 5 患者：授权药店或者其他医生查看处方
+#### 6 患者：授权药店或者其他医生查看处方
 ```
 iMac:~ liangping$ rxcli tx patient authorize --from ping --chain-id test --rx-id 6e31583233299 --recipient 8c1b20e6f11e20853d48a297203cb57e459ed745632772076e7cd513cfebd759
 {"chain_id":"test","account_number":"3","sequence":"3","fee":{"amount":[],"gas":"200000"},"msgs":[{"type":"patient/authorize","value":{"from":"cosmos14pkakt8apdm0e49tzp6gy3lwe8u04ajched5qm","patient":"6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d","drugstore":"8c1b20e6f11e20853d48a297203cb57e459ed745632772076e7cd513cfebd759","id":"yJ50OGoSVpfSJB7vAXPvPCPRkCVRPAvJBrxZ3zZ5I4M=#0SNsDhJ4cDOZhvVE","envelope":""}}],"memo":""}
@@ -138,7 +138,7 @@ tx: null
 timestamp: ""
 ```
 
-#### 6 患者：查看授权记录
+#### 7 患者：查看授权记录
 ```
 iMac:~ liangping$ rxcli query patient permits --keyname ping --chain-id test --rx-id 6e31583233299
 - visitor: 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -147,7 +147,7 @@ iMac:~ liangping$ rxcli query patient permits --keyname ping --chain-id test --r
   envelope: hQci40sTwmCrvlIOPO5lcdXwZwfNXH/gL6jCqxXHFP4=#iTCGsZDZADsUKE0e
 ```
 
-#### 7 药店：查看处方
+#### 8 药店：查看处方
 默认显示处方密文数据
 ```
 iMac:~ liangping$ rxcli query drugstore view --keyname ping --chain-id test --rx-id 6e31583233299 --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -176,7 +176,7 @@ memo: test drug decrypt
 salestore: ""
 saletime: 0001-01-01T00:00:00Z
 ```
-#### 8 药店：售药
+#### 9 药店：售药
 ```
 iMac:~ liangping$ rxcli tx drugstore sale --from store --chain-id test --rx-id 6e31583233299 --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d -y
 height: 0
