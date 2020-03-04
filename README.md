@@ -147,7 +147,7 @@ iMac:~ liangping$ rxcli query patient permits --keyname ping --chain-id test --r
   envelope: hQci40sTwmCrvlIOPO5lcdXwZwfNXH/gL6jCqxXHFP4=#iTCGsZDZADsUKE0e
 ```
 
-#### 8 药店：查看处方
+#### 8 药店：查看/核验处方
 默认显示处方密文数据
 ```
 iMac:~ liangping$ rxcli query drugstore view --keyname ping --chain-id test --rx-id 6e31583233299 --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
