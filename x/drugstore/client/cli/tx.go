@@ -20,6 +20,7 @@ import (
 func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	txCmd := &cobra.Command{
 		Use:                        types.ModuleName,
+		Aliases:                    []string{"store"},
 		Short:                      "drugstore transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
