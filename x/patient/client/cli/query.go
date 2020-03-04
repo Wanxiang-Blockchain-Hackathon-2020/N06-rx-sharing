@@ -93,8 +93,6 @@ func GetCmdQueryRx(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
-			fmt.Println("query:", queryRoute)
-
 			cpt := viper.GetString("crypto")
 			id := viper.GetString("rx-id")
 			keyname := viper.GetString("keyname")

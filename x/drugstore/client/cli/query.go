@@ -84,7 +84,7 @@ func GetCmdQueryRx(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 					fmt.Println("private hex:", hex.EncodeToString(priv.Bytes()))
 					if decrypt {
-						plaintext, _ := crypto.Dencrypt(cpt, patient, priv.Bytes(), t.Envelope, rx.Encrypted)
+						plaintext, _ := crypto.Dencrypt(cpt, rx.Patient, priv.Bytes(), t.Envelope, rx.Encrypted)
 						rx.Encrypted = plaintext
 					}
 

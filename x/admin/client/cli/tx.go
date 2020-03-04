@@ -3,6 +3,7 @@ package cli
 import (
 	"bufio"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/crypto"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/internal/types"
@@ -68,6 +69,9 @@ func GetKeygenCommand(cdc *codec.Codec) *cobra.Command {
 				return err3
 			}
 
+			if viper.GetBool("seed") {
+				fmt.Printf("Seed: %s  Note: Keep it in a securite place.\n", hex.EncodeToString(priv.Bytes()))
+			}
 			fmt.Println(pubkey)
 
 			return nil
@@ -75,6 +79,7 @@ func GetKeygenCommand(cdc *codec.Codec) *cobra.Command {
 	}
 
 	cmd.Flags().String("crypto", "", "specify the algorithm to crypto, available value[sm2, ed25519]")
+	cmd.Flags().Bool("seed", false, "show seed")
 
 	return cmd
 }

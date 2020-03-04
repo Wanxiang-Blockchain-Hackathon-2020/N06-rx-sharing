@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bufio"
+	"encoding/hex"
 	"fmt"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/crypto"
 	"github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/x/admin/exported"
@@ -94,6 +95,9 @@ func GetCmdAuthorize(cdc *codec.Codec) *cobra.Command {
 			}
 
 			newone, _ := crypto.RenewEnvelope(cpt, priv.Bytes(), rx.Doctor, recipient, envelope)
+
+			store, _ := hex.DecodeString("e1b0f79b20aa783b6aed89e1d82a5db06b7b560bbce3051090e2bb12f644f09820d00a25c9")
+			fmt.Println(crypto.Dencrypt("", patient, store, newone, rx.Encrypted))
 
 			msg := types.NewMsgAuthorizeRx(cliCtx.GetFromAddress(), patient, recipient, id, newone)
 			errs := msg.ValidateBasic()
