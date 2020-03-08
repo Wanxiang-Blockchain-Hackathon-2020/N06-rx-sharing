@@ -25,7 +25,7 @@ func RandBytes(size int) []uint8 {
 
 func Encrypt(crypto string, seed []byte, pubkey string, content string) (string, string, error) {
 	if crypto == "sm2" {
-		return "", "", nil
+		return encryptSM2(seed, pubkey, content)
 	} else {
 		return encryptX25519(seed, pubkey, content)
 	}
@@ -33,7 +33,7 @@ func Encrypt(crypto string, seed []byte, pubkey string, content string) (string,
 
 func Dencrypt(crypto string, pubkey string, seed []byte, envelope string, cryptContent string) (string, error) {
 	if crypto == "sm2" {
-		return "", nil
+		return decryptSM2(pubkey, seed, envelope, cryptContent)
 	} else {
 		return decryptX25519(pubkey, seed, envelope, cryptContent)
 	}
@@ -41,7 +41,7 @@ func Dencrypt(crypto string, pubkey string, seed []byte, envelope string, cryptC
 
 func RenewEnvelope(crypto string, seed []byte, old string, news string, envelope string) (string, error) {
 	if crypto == "sm2" {
-		return "", nil
+		return renewEnvelopeSM2(seed, old, news, envelope)
 	} else {
 		return renewEnvelope(seed, old, news, envelope)
 	}

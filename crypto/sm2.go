@@ -63,3 +63,20 @@ func encryptSM4() {
 	c.Decrypt(d1, d0)
 	fmt.Printf("d1 = %x\n", d1)
 }
+
+func encryptSM2(seed []byte, pubkey string, content string) (string, string, error) {
+
+	// TODO to finish if you need
+	return "", "", nil
+}
+
+func decryptSM2(pubkey string, seed []byte, envelope string, cryptText string) (string, error) {
+
+	// TODO to finish if you need
+	return "", nil
+}
+
+func renewEnvelopeSM2(seed []byte, o string, n string, envelope string) (string, error) {
+	// TODO to finish if you need
+	return "", nil
+}
