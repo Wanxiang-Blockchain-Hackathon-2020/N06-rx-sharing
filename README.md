@@ -12,20 +12,27 @@
 
 ### 背景
 
-2020新冠肺炎来袭。给中国的医疗体系带来了严俊的考验，特别是医疗信息化的数据透明度，数据孤岛的互联互通，数据的真假难辨是最为突出的问题，这些问题传统的IT技术很难完美解决。我们团队积极响应万向区块链公益黑客松的号召，尝试使用区块链技术来解决医疗行业的一些问题，为促进区块链在医疗行业的应用落地提供示范。
+2020新冠肺炎来袭。给中国的医疗体系带来了严俊的考验，特别是医疗信息化的数据透明度，数据孤岛的互联互通，数据真假难分成为最为突出的问题，这些问题传统的IT技术很难完美解决。Ping.pub团队积极响应万向区块链实验室举办的”同气链枝“公益黑客松的号召，尝试使用区块链技术来解决医疗行业的一些问题，为促进区块链在医疗行业的应用落地提供示范。
 
-### 解决问题
-针对国家医药分离的改革举措，提出处方流转共享区块链解决方案
+### 项目介绍
+处方共享区块链是一个非常实用的应用，可以广泛应用于互联网医院、分级转诊、处方流转等诸多医疗应用场景。区块链上的电子处方是加密的，不可篡改的且有数字签名，因此，具有不可抵赖和隐私保护的天然特质。以电子处方为代表的个人健康数据隐私计算的应用和普及将改善老百姓的就医体验，影响每一个人的健康生活，彻底改变人们的生活方式。
 
 ### 应用场景
-以城市或者地区为单位成立跨区域医疗信息协作共享平台。1.医生在医院为患者开处方，2.患者接受电子处方(在链上)，3.患者在就近药店买药(包括处方药)，4.药店核验处方真伪，药店依据处方售药。5.留存备案/政府监管
+- 互联网医院 - 互联网医院可以通过”处方共享区块链“为患者开电子处方，患者在身边药房就近买药
+- 分级转诊 - 医联体之间医疗数据共享，三甲医院和社区医院之间的数据共享。
+- 处方流转 - 以城市或者地区为单位成立跨区域医疗信息协作共享平台。1.医生在医院为患者开处方，2.患者接受电子处方(在链上)，3.患者在就近药店买药(包括处方药)，4.药店核验处方真伪，药店依据处方售药。5.留存备案/政府监管
+- 个人数据共享 - 个人体检数据，基因检测数据，健康档案、运动数据等个体健康数据共享。
 
+### 底层技术
+ - Cosmos SDK - 完全自主可控的区块链，可独立部署，不依赖任何其他公链，成本可控。可扩展性强，既可以作为联盟链运营，也可作为公链运营，为项目实施落地方案提供更多选择。
+ - 加密算法 - 默认采用国际领先的加密算法，来实现秘钥交换和数据分组加密。可以根据需要选用中国国家标准加密算法: SM2和SM4
+ 
 ### 方案特点
-
-- 去中心化，多方节点共同参与
-- 数据不可篡改，不可抵赖，可追溯
-- 数据加密上链，保护数据隐私。
-- 数据公开透明。
+- 保护隐私，数据加密上链，电子处方数据点对点加密，任何第三方无法获取。
+- 不可抵赖，数据添加数字签名，不可篡改，可追溯
+- 公开透明，电子处方处理流程全上链，全程透明、公开。
+- 去中心化，多个节点由多个独立实体分为维护，共同保证数据安全。
+- **医保电子支付**，实现点对点医保电子支付和电子处方的有机整合。
 
 ### 使用帮助
 
@@ -42,7 +49,7 @@ iMac:~ liangping$ rxcli tx admin keygen --from store
 
 #### 2 注册/登记/绑定
 
-注意：医生，药店的注册，只能有特殊权限的用户才能操作，操作步骤类似。
+注意：医生，药店的注册，只能有特殊权限的用户才能操作。
 ```
 iMac:~ liangping$ rxcli tx register patient --birthday "2000-10-10" --from ping --name "丽丽" --gender "女" --pubkey="6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d" -y --chain-id test
 height: 3
@@ -59,7 +66,7 @@ tx: null
 timestamp: ""
 
 ```
-#### 3 查询绑定信息
+查询绑定信息
 ```sh
 iMac:~ liangping$ rxcli query admin patient --chain-id test  6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
 pubkey: 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -70,9 +77,9 @@ encrypted: ""
 envelope: ""
 
 ```
-#### 4 医生：开处方
+#### 3 医生：开处方
 
-处方数据`--rx "处方明文数据"`加密上链，数据采用点对点加密，秘钥随机生成，任何人均不知道，任何第三方无法解开
+处方数据`--rx "处方明文数据"`加密上链，数据采用点对点加密，秘钥随机生成，没有人均不知道，除当事人双方外，任何第三方无法解开
 
 ```sh
 iMac:~ liangping$ rxcli tx doctor prescribe --from doctor --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d --rx '{name:"病人",rx:"other field"}' --memo "memo" -y --chain-id test --fees 1stake --gas-adjustment 2
@@ -90,7 +97,7 @@ tx: null
 timestamp: ""
 ```
 
-#### 5 患者：查看处方
+#### 4 患者：查看处方
 查看密文处方
 ```
 iMac:~ liangping$ rxcli query patient rxs --keyname ping --chain-id test
@@ -118,7 +125,7 @@ salestore: ""
 saletime: 0001-01-01T00:00:00Z
 ```
 
-#### 6 患者：授权药店或者其他医生查看处方
+#### 5 患者：授权药店或者其他医生查看处方
 ```
 iMac:~ liangping$ rxcli tx patient authorize --from ping --chain-id test --rx-id 6e31583233299 --recipient 8c1b20e6f11e20853d48a297203cb57e459ed745632772076e7cd513cfebd759
 {"chain_id":"test","account_number":"3","sequence":"3","fee":{"amount":[],"gas":"200000"},"msgs":[{"type":"patient/authorize","value":{"from":"cosmos14pkakt8apdm0e49tzp6gy3lwe8u04ajched5qm","patient":"6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d","drugstore":"8c1b20e6f11e20853d48a297203cb57e459ed745632772076e7cd513cfebd759","id":"yJ50OGoSVpfSJB7vAXPvPCPRkCVRPAvJBrxZ3zZ5I4M=#0SNsDhJ4cDOZhvVE","envelope":""}}],"memo":""}
@@ -138,7 +145,7 @@ tx: null
 timestamp: ""
 ```
 
-#### 7 患者：查看授权记录
+#### 6 患者：查看处方授权记录
 ```
 iMac:~ liangping$ rxcli query patient permits --keyname ping --chain-id test --rx-id 6e31583233299
 - visitor: 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -147,7 +154,7 @@ iMac:~ liangping$ rxcli query patient permits --keyname ping --chain-id test --r
   envelope: hQci40sTwmCrvlIOPO5lcdXwZwfNXH/gL6jCqxXHFP4=#iTCGsZDZADsUKE0e
 ```
 
-#### 8 药店：查看/核验处方
+#### 7 药店：查看处方
 默认显示处方密文数据
 ```
 iMac:~ liangping$ rxcli query drugstore view --keyname ping --chain-id test --rx-id 6e31583233299 --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d
@@ -176,7 +183,7 @@ memo: test drug decrypt
 salestore: ""
 saletime: 0001-01-01T00:00:00Z
 ```
-#### 9 药店：售药
+#### 8 药店：售药
 ```
 iMac:~ liangping$ rxcli tx drugstore sale --from store --chain-id test --rx-id 6e31583233299 --patient 6e348eaeabff9556f06309d407e1d36726efc42736081976c34d765baba1663d -y
 height: 0
