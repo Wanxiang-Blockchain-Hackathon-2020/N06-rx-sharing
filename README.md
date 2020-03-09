@@ -1,4 +1,4 @@
-#### # N06-ping.pub
+#### # N06-摇铃科技 
 <div align="center">
 
 <h1>方块链 - 处方共享区块链</h2>
@@ -8,11 +8,12 @@
 [![API Reference](https://godoc.org/github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing?status.svg)](https://godoc.org/github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing)
 [![GitHub](https://img.shields.io/github/license/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing.svg)](https://github.com/Wanxiang-Blockchain-Hackathon-2020/N06-rx-sharing/blob/master/LICENSE.md)
 
+Email: 18786721@qq.com
 </div>
 
 ### 背景
 
-2020新冠肺炎来袭。给中国的医疗体系带来了严俊的考验，特别是医疗信息化的数据透明度，数据孤岛的互联互通，数据真假难分成为最为突出的问题，这些问题传统的IT技术很难完美解决。Ping.pub团队积极响应万向区块链实验室举办的”同气链枝“公益黑客松的号召，尝试使用区块链技术来解决医疗行业的一些问题，为促进区块链在医疗行业的应用落地提供示范。
+2020新冠肺炎来袭。给中国的医疗体系带来了严俊的考验，特别是医疗信息化的数据透明度，数据孤岛的互联互通，数据真假难分成为最为突出的问题，这些问题传统的IT技术很难完美解决。摇铃科技积极响应万向区块链实验室举办的”同气链枝“公益黑客松的号召，尝试使用区块链技术来解决医疗行业的一些问题，为促进区块链在医疗行业的应用落地提供示范。
 
 ### 项目介绍
 处方共享区块链是一个非常实用的应用，可以广泛应用于互联网医院、分级转诊、处方流转等诸多医疗应用场景。区块链上的电子处方是加密的，不可篡改的且有数字签名，因此，具有不可抵赖和隐私保护的天然特质。以电子处方为代表的个人健康数据隐私计算的应用和普及将改善老百姓的就医体验，影响每一个人的健康生活，彻底改变人们的生活方式。
